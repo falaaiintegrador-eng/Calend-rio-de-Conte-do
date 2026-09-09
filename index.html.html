@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pauta Fala Ai</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<style id="app-style">
+:root{
+  --ground:#EFEDE8; --surface:#FFFFFF; --surface-2:#F6F4EF;
+  --ink:#191714; --ink-2:#4A443C; --muted:#7C7568;
+  --rule:#DCD6CB; --rule-soft:#E7E2D9;
+  --accent:#B8770C; --accent-ink:#FFFFFF; --on-pill:#FFFFFF;
+  --p-pos:#B8770C; --p-mkt:#2A6B62; --p-ia:#6A4E9C; --p-mer:#35608F; --p-eng:#65752F;
+  --shadow:0 1px 2px rgba(25,23,20,.05), 0 10px 30px -20px rgba(25,23,20,.35);
+  --field:#FBFAF7; --field-line:#E4DED3;
+  --r-lg:20px; --r-md:16px; --r-sm:11px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#151310; --surface:#211E19; --surface-2:#1B1915;
+    --ink:#EFE9DF; --ink-2:#C9C0B2; --muted:#968D7E;
+    --rule:#363028; --rule-soft:#2C271F;
+    --accent:#F0B542; --accent-ink:#1B1710; --on-pill:#17140F;
+    --p-pos:#F0B542; --p-mkt:#6FC3B4; --p-ia:#B49BE8; --p-mer:#8FBBE8; --p-eng:#B8C56D;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -20px rgba(0,0,0,.9);
+    --field:#191713; --field-line:#363028;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#151310; --surface:#211E19; --surface-2:#1B1915;
+  --ink:#EFE9DF; --ink-2:#C9C0B2; --muted:#968D7E;
+  --rule:#363028; --rule-soft:#2C271F;
+  --accent:#F0B542; --accent-ink:#1B1710; --on-pill:#17140F;
+  --p-pos:#F0B542; --p-mkt:#6FC3B4; --p-ia:#B49BE8; --p-mer:#8FBBE8; --p-eng:#B8C56D;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -20px rgba(0,0,0,.9);
+  --field:#191713; --field-line:#363028;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+#root{max-width:1160px; margin:0 auto; padding:26px 18px 130px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Karla",sans-serif; text-wrap:balance; margin:0}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+/* ---------- topo ---------- */
+.top{
+  background:var(--surface); border:1px solid var(--rule-soft); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); padding:22px 24px; display:flex; flex-wrap:wrap;
+  align-items:flex-end; gap:18px 30px; margin-bottom:12px;
+}
+.top .id{flex:1 1 320px}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+h1{font-size:clamp(30px,5vw,44px); font-weight:800; letter-spacing:-.025em; line-height:1.02; margin-top:7px}
+h1 em{font-style:normal; color:var(--accent)}
+.sub{color:var(--ink-2); max-width:54ch; margin:9px 0 0}
+.mes-ctrl{display:flex; align-items:center; gap:9px; margin-top:14px; flex-wrap:wrap}
+.mes-ctrl label{font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted)}
+input[type="month"]{
+  font:inherit; font-size:13.5px; color:var(--ink); background:var(--field);
+  border:1px solid var(--field-line); border-radius:999px; padding:7px 14px; cursor:pointer;
+}
+.right{display:flex; flex-direction:column; align-items:flex-end; gap:12px}
+.counts{display:flex; gap:10px; flex-wrap:wrap}
+.count{background:var(--surface-2); border-radius:var(--r-md); padding:11px 16px; min-width:80px}
+.count b{display:block; font-family:"Bricolage Grotesque",sans-serif; font-size:26px; font-weight:700; line-height:1.05; font-variant-numeric:tabular-nums}
+.count span{font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted)}
+
+/* ---------- seções ---------- */
+.section-head{display:flex; align-items:baseline; gap:12px; margin:30px 4px 13px}
+.section-head h2{font-size:19px; font-weight:700; letter-spacing:-.015em}
+.section-head .line{flex:1; height:1px; background:var(--rule)}
+.section-head .note{font-size:12.5px; color:var(--muted)}
+
+/* ---------- linhas editoriais ---------- */
+.linhas{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:12px}
+.linha{
+  background:var(--surface); border:1px solid var(--rule-soft); border-radius:var(--r-md);
+  box-shadow:var(--shadow); padding:14px 15px 13px; display:flex; flex-direction:column; gap:9px;
+}
+.linha-top{display:flex; align-items:flex-start; gap:9px}
+.linha-top i{width:10px; height:10px; border-radius:50%; background:var(--pc); flex:none; margin-top:6px}
+.linha-top h3{font-size:14.5px; font-weight:700; letter-spacing:-.01em; line-height:1.25; flex:1}
+.qtd{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600; color:var(--pc);
+  border:1px solid var(--pc); border-radius:999px; padding:2px 8px; flex:none; line-height:1.5;
+}
+.rot{
+  align-self:flex-start; font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--on-pill); background:var(--pc); border-radius:999px; padding:3px 9px;
+}
+textarea.aspecto{
+  font:inherit; font-size:13px; line-height:1.45; color:var(--ink-2); background:var(--surface-2);
+  border:1px solid transparent; border-radius:var(--r-sm); padding:8px 10px; width:100%; resize:vertical; min-height:74px;
+}
+textarea.aspecto:hover{border-color:var(--rule-soft)}
+
+/* ---------- regras fixas ---------- */
+.rules{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.rule-chip{font-size:12.5px; color:var(--ink-2); background:var(--surface); border:1px solid var(--rule-soft); border-radius:999px; padding:6px 14px}
+.rule-chip b{color:var(--ink); font-weight:700}
+
+/* ---------- cards da pauta ---------- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:13px}
+.card{
+  background:var(--surface); border:1px solid var(--rule-soft); border-radius:var(--r-md);
+  box-shadow:var(--shadow); display:flex; flex-direction:column; scroll-margin-top:20px; overflow:hidden;
+}
+.card::before{content:""; display:block; height:4px; background:var(--pc)}
+.card.flash{box-shadow:0 0 0 3px var(--pc); transition:box-shadow .9s ease-out}
+.card-top{display:flex; align-items:center; gap:8px; padding:11px 12px 10px 14px; flex-wrap:wrap}
+.slot{font-family:"JetBrains Mono",monospace; font-size:10.5px; font-weight:600; color:var(--muted); letter-spacing:.06em}
+select.dia{
+  font:inherit; font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:14px;
+  color:var(--ink); background:var(--surface-2); border:1px solid transparent;
+  border-radius:999px; padding:4px 10px; cursor:pointer;
+}
+select.dia:hover{border-color:var(--rule)}
+select.pilar{
+  margin-left:auto; font:inherit; font-size:10.5px; font-family:"JetBrains Mono",monospace;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--pc);
+  background:transparent; border:1px solid var(--pc); border-radius:999px; padding:4px 9px; cursor:pointer; max-width:160px;
+}
+.del{
+  font:inherit; font-size:15px; line-height:1; color:var(--muted); background:transparent; border:0;
+  border-radius:999px; padding:4px 7px; cursor:pointer;
+}
+.del:hover{background:var(--surface-2); color:var(--ink)}
+.card-body{padding:0 14px 14px; display:flex; flex-direction:column; gap:11px; flex:1}
+.field{display:flex; flex-direction:column; gap:5px}
+.lab{font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
+.lab i{font-style:normal; text-transform:none; letter-spacing:0; font-family:"Karla",sans-serif; font-size:11.5px; color:var(--muted); opacity:.85}
+input.f,textarea.f{
+  font:inherit; color:var(--ink); background:var(--field);
+  border:1px solid var(--field-line); border-radius:var(--r-sm); padding:8px 11px; width:100%; resize:vertical;
+}
+input.f:focus,textarea.f:focus,textarea.aspecto:focus,select:focus,input[type="month"]:focus,button:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+textarea.f{min-height:66px; line-height:1.5}
+textarea.legenda{min-height:88px}
+input.gancho{font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:15.5px; letter-spacing:-.012em}
+.hint{
+  font-size:11.5px; line-height:1.4; color:var(--ink-2); background:var(--surface-2);
+  border-radius:var(--r-sm); padding:7px 11px; margin-top:-3px;
+}
+.hint b{font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--pc); display:block; margin-bottom:1px}
+.status{display:flex; gap:4px; margin-top:auto; padding-top:2px}
+.status button{
+  flex:1; font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+  padding:7px 2px; background:var(--surface-2); color:var(--muted); border:1px solid transparent; border-radius:999px; cursor:pointer;
+}
+.status button:hover{border-color:var(--rule)}
+.status button[aria-pressed="true"]{background:var(--pc); color:var(--on-pill); font-weight:600; border-color:var(--pc)}
+.add{
+  border:2px dashed var(--rule); border-radius:var(--r-md); background:transparent; color:var(--muted);
+  font:inherit; font-weight:700; font-size:14px; cursor:pointer; min-height:150px; padding:20px;
+}
+.add:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ---------- calendário ---------- */
+.cal{background:var(--surface); border:1px solid var(--rule-soft); border-radius:var(--r-lg); box-shadow:var(--shadow); padding:10px}
+.cal-head{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:2px 4px 8px}
+.cal-head div{font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted)}
+.cal-body{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.day{
+  min-height:104px; border-radius:13px; background:var(--surface-2); padding:8px 9px 9px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.day.empty{background:transparent}
+.day .n{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums}
+.day.has{background:color-mix(in oklab, var(--pc) 11%, var(--surface-2)); box-shadow:inset 0 0 0 1px color-mix(in oklab, var(--pc) 28%, transparent)}
+.day.has .n{color:var(--ink); font-weight:600}
+.day.multi{background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--rule)}
+.slotbtn{
+  text-align:left; font:inherit; font-size:12px; line-height:1.32; cursor:pointer;
+  background:transparent; border:0; border-radius:9px; padding:0; color:var(--ink);
+  display:flex; flex-direction:column; gap:3px;
+}
+.slotbtn+.slotbtn{border-top:1px solid var(--rule); padding-top:6px}
+.slotbtn .pl{font-family:"JetBrains Mono",monospace; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--pc); display:flex; justify-content:space-between; align-items:center; gap:6px}
+.slotbtn .tt{display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden}
+.slotbtn:hover .tt{text-decoration:underline}
+.dot{width:6px; height:6px; border-radius:50%; background:var(--pc); opacity:.3; flex:none}
+.dot.on{opacity:1}
+
+/* ---------- barra salvar ---------- */
+.savebar{
+  position:fixed; left:50%; transform:translateX(-50%) translateY(160%); bottom:18px; z-index:9;
+  display:flex; align-items:center; gap:14px; background:var(--surface); color:var(--ink);
+  border:1px solid var(--rule); border-radius:999px; padding:8px 8px 8px 20px; box-shadow:0 14px 36px -14px rgba(0,0,0,.5);
+  transition:transform .25s ease;
+}
+.savebar.show{transform:translateX(-50%) translateY(0)}
+.savebar span{font-size:13px; color:var(--ink-2)}
+.savebar button{
+  font:inherit; font-weight:700; font-size:13.5px; background:var(--accent); color:var(--accent-ink);
+  border:0; border-radius:999px; padding:9px 20px; cursor:pointer;
+}
+.savebar button[disabled]{opacity:.55; cursor:default}
+.ro{margin-top:26px; font-size:12.5px; color:var(--muted); text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+@media (max-width:760px){
+  .cal-body{grid-template-columns:repeat(2,1fr)}
+  .cal-head{display:none}
+  .day{min-height:auto}
+  .day.empty{display:none}
+  .right{align-items:flex-start}
+}
+</style>
+
+<script id="state" type="application/json">
+{"ano":2026,"mes":9,
+"linhas":{
+ "pos":{"nome":"Posicionamento / anti-guerra de preço","rot":"Tom","aspecto":"Provocação peer-to-peer. Fala como quem conhece a rotina do integrador, sem lecionar."},
+ "mkt":{"nome":"Marketing prático","rot":"Formato","aspecto":"Lista ou comparação. Conteúdo salvável, de aplicação imediata."},
+ "ia":{"nome":"IA e ferramentas","rot":"Ângulo","aspecto":"Mostra a ferramenta resolvendo uma tarefa real da semana. O resultado na frente, não o hype."},
+ "mer":{"nome":"Conjuntura de mercado","rot":"Ângulo","aspecto":"Notícia usada como argumento de venda para o integrador, nunca como informação solta."},
+ "eng":{"nome":"Engajamento leve","rot":"Função","aspecto":"Pergunta rápida, comunidade, comentários."}
+},
+"posts":[
+{"n":1,"dia":1,"pilar":"mkt","gancho":"3 posts que todo integrador devia ter fixado no perfil","formato":"Carrossel 6 telas","arte":"","legenda":"","status":"ideia"},
+{"n":2,"dia":3,"pilar":"pos","gancho":"Orçamento enviado. Cliente sumiu.","formato":"Carrossel 5 telas","arte":"","legenda":"","status":"ideia"},
+{"n":3,"dia":5,"pilar":"eng","gancho":"Qual dessas duas capas você clicaria?","formato":"Enquete no story + post A/B","arte":"","legenda":"","status":"ideia"},
+{"n":4,"dia":8,"pilar":"mer","gancho":"O que muda pro seu cliente na Lei 14.300 em 2026","formato":"Carrossel 7 telas","arte":"","legenda":"","status":"ideia"},
+{"n":5,"dia":10,"pilar":"mkt","gancho":"Como responder \"tá caro\" no direct sem dar desconto","formato":"Carrossel 5 telas","arte":"","legenda":"","status":"ideia"},
+{"n":6,"dia":12,"pilar":"ia","gancho":"O prompt que escreve a legenda enquanto você almoça","formato":"Carrossel print da tela","arte":"","legenda":"","status":"ideia"},
+{"n":7,"dia":15,"pilar":"pos","gancho":"Enquanto você briga no preço, ele posta todo dia","formato":"Reels falado 30s","arte":"","legenda":"","status":"ideia"},
+{"n":8,"dia":17,"pilar":"mkt","gancho":"5 assuntos pra postar quando você acha que não tem o que postar","formato":"Carrossel lista 7 telas","arte":"","legenda":"","status":"ideia"},
+{"n":9,"dia":19,"pilar":"mer","gancho":"A tarifa subiu de novo. O que mandar pro cliente que sumiu.","formato":"Carrossel 5 telas","arte":"","legenda":"","status":"ideia"},
+{"n":10,"dia":22,"pilar":"ia","gancho":"A IA faz a arte. E depois?","formato":"Reels falado 40s","arte":"","legenda":"","status":"ideia"},
+{"n":11,"dia":24,"pilar":"pos","gancho":"Você não tá caro. Você tá igual.","formato":"Post estático frase","arte":"","legenda":"","status":"ideia"},
+{"n":12,"dia":26,"pilar":"mkt","gancho":"Um mês de posts organizado em uma tarde","formato":"Carrossel processo 6 telas","arte":"","legenda":"","status":"ideia"},
+{"n":13,"dia":29,"pilar":"pos","gancho":"Seu perfil é o seu segundo orçamento","formato":"Reels falado 30s","arte":"","legenda":"","status":"ideia"}
+]}
+</script>
+
+<div id="root"></div>
+
+<script id="app-script">
+(function(){
+  "use strict";
+  var TITLE = "Pauta Fala Aí";
+  var FONTS = '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">';
+
+  var CORES = {pos:"var(--p-pos)", mkt:"var(--p-mkt)", ia:"var(--p-ia)", mer:"var(--p-mer)", eng:"var(--p-eng)"};
+  var ORDEM = ["pos","mkt","ia","mer","eng"];
+  var STATUS = ["ideia","escrito","arte","postado"];
+  var MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  var DOW = ["dom","seg","ter","qua","qui","sex","sáb"];
+
+  var state = JSON.parse(document.getElementById("state").textContent);
+  var root = document.getElementById("root");
+  var dirty = false, readonly = false, api = null;
+
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function linha(k){ return state.linhas[k] || state.linhas.pos; }
+  function cor(k){ return CORES[k] || CORES.pos; }
+  function byN(n){ for(var i=0;i<state.posts.length;i++){ if(state.posts[i].n===n) return state.posts[i]; } return null; }
+  function noMes(){ return new Date(state.ano, state.mes, 0).getDate(); }
+  function primeiroDow(){ return new Date(state.ano, state.mes-1, 1).getDay(); }
+  function dowDe(dia){ return DOW[new Date(state.ano, state.mes-1, dia).getDay()]; }
+  function dd(n){ return String(n).padStart(2,"0"); }
+  function ordenados(){ return state.posts.slice().sort(function(a,b){ return a.dia - b.dia || a.n - b.n; }); }
+
+  function ajustarDias(){
+    var max = noMes();
+    state.posts.forEach(function(p){ if(p.dia > max) p.dia = max; if(p.dia < 1) p.dia = 1; });
+  }
+
+  function contagens(){
+    var c={total:state.posts.length, escritos:0, postados:0, pilar:{}};
+    ORDEM.forEach(function(k){ c.pilar[k]=0; });
+    state.posts.forEach(function(p){
+      c.pilar[p.pilar]=(c.pilar[p.pilar]||0)+1;
+      if(p.status!=="ideia") c.escritos++;
+      if(p.status==="postado") c.postados++;
+    });
+    return c;
+  }
+
+  function linhasHTML(c){
+    return '<div class="linhas">'+ ORDEM.map(function(k){
+      var L = linha(k);
+      return '<section class="linha" style="--pc:'+cor(k)+'">'+
+        '<div class="linha-top"><i></i><h3>'+esc(L.nome)+'</h3><span class="qtd">'+c.pilar[k]+'</span></div>'+
+        '<span class="rot">'+esc(L.rot)+'</span>'+
+        '<textarea class="aspecto" data-act="linha" data-p="'+k+'" aria-label="'+esc(L.rot)+' da linha '+esc(L.nome)+'">'+esc(L.aspecto)+'</textarea>'+
+      '</section>';
+    }).join("") +'</div>';
+  }
+
+  function cardHTML(p, idx){
+    var L = linha(p.pilar), max = noMes();
+    var dias = "";
+    for(var d=1; d<=max; d++){
+      dias += '<option value="'+d+'"'+(d===p.dia?' selected':'')+'>'+dd(d)+'/'+dd(state.mes)+' · '+dowDe(d)+'</option>';
+    }
+    var opts = ORDEM.map(function(k){
+      return '<option value="'+k+'"'+(k===p.pilar?' selected':'')+'>'+esc(state.linhas[k].nome)+'</option>';
+    }).join("");
+    var st = STATUS.map(function(s){
+      return '<button type="button" data-act="status" data-n="'+p.n+'" data-v="'+s+'" aria-pressed="'+(p.status===s)+'">'+s+'</button>';
+    }).join("");
+    return ''+
+    '<article class="card" id="post-'+p.n+'" style="--pc:'+cor(p.pilar)+'">'+
+      '<div class="card-top">'+
+        '<span class="slot">POST '+dd(idx+1)+'</span>'+
+        '<select class="dia" data-act="dia" data-n="'+p.n+'" aria-label="Data do post">'+dias+'</select>'+
+        '<select class="pilar" data-act="pilar" data-n="'+p.n+'" aria-label="Linha editorial do post">'+opts+'</select>'+
+        '<button class="del" type="button" data-act="del" data-n="'+p.n+'" title="Remover post" aria-label="Remover post">×</button>'+
+      '</div>'+
+      '<div class="card-body">'+
+        '<div class="field">'+
+          '<label class="lab" for="g'+p.n+'">Gancho da arte</label>'+
+          '<input class="f gancho" id="g'+p.n+'" data-act="edit" data-k="gancho" data-n="'+p.n+'" value="'+esc(p.gancho)+'">'+
+        '</div>'+
+        '<div class="hint" data-hint="'+p.pilar+'"><b>'+esc(L.rot)+'</b><span>'+esc(L.aspecto)+'</span></div>'+
+        '<div class="field">'+
+          '<label class="lab" for="f'+p.n+'">Formato</label>'+
+          '<input class="f mono" style="font-size:12.5px" id="f'+p.n+'" data-act="edit" data-k="formato" data-n="'+p.n+'" value="'+esc(p.formato)+'">'+
+        '</div>'+
+        '<div class="field">'+
+          '<label class="lab" for="a'+p.n+'">Texto da arte <i>o que aparece na tela</i></label>'+
+          '<textarea class="f" id="a'+p.n+'" data-act="edit" data-k="arte" data-n="'+p.n+'" placeholder="Tela 1: …&#10;Tela 2: …">'+esc(p.arte)+'</textarea>'+
+        '</div>'+
+        '<div class="field">'+
+          '<label class="lab" for="l'+p.n+'">Legenda <i>informação nova, não repete a arte</i></label>'+
+          '<textarea class="f legenda" id="l'+p.n+'" data-act="edit" data-k="legenda" data-n="'+p.n+'" placeholder="Escreve aqui…">'+esc(p.legenda)+'</textarea>'+
+        '</div>'+
+        '<div class="status" role="group" aria-label="Status do post">'+st+'</div>'+
+      '</div>'+
+    '</article>';
+  }
+
+  function calHTML(){
+    var offset = primeiroDow(), ultimo = noMes(), mapa = {};
+    state.posts.forEach(function(p){ (mapa[p.dia] = mapa[p.dia] || []).push(p); });
+    var cells = "";
+    for(var i=0;i<offset;i++) cells += '<div class="day empty"></div>';
+    for(var d=1; d<=ultimo; d++){
+      var lista = mapa[d];
+      if(!lista){ cells += '<div class="day"><span class="n">'+d+'</span></div>'; continue; }
+      var multi = lista.length > 1;
+      var botoes = lista.map(function(p){
+        var L = linha(p.pilar);
+        var on = (p.status==="arte"||p.status==="postado") ? " on" : "";
+        return '<button class="slotbtn" type="button" data-act="ir" data-n="'+p.n+'" style="--pc:'+cor(p.pilar)+'">'+
+          '<span class="pl">'+esc(L.nome.split(" / ")[0])+'<i class="dot'+on+'"></i></span>'+
+          '<span class="tt">'+esc(p.gancho)+'</span>'+
+        '</button>';
+      }).join("");
+      cells += '<div class="day has'+(multi?" multi":"")+'" style="--pc:'+cor(lista[0].pilar)+'">'+
+        '<span class="n">'+d+'</span>'+ botoes +'</div>';
+    }
+    var resto = (offset + ultimo) % 7;
+    if(resto) for(var j=resto; j<7; j++) cells += '<div class="day empty"></div>';
+    var head = DOW.map(function(d){ return '<div>'+d+'</div>'; }).join("");
+    return '<div class="cal"><div class="cal-head">'+head+'</div><div class="cal-body">'+cells+'</div></div>';
+  }
+
+  function nomeMes(){ return MESES[state.mes-1].charAt(0).toUpperCase() + MESES[state.mes-1].slice(1); }
+
+  function render(){
+    var c = contagens();
+    root.innerHTML = ''+
+      '<header class="top">'+
+        '<div class="id">'+
+          '<div class="eyebrow">@falaai.integrador · pauta mensal</div>'+
+          '<h1>'+nomeMes()+' <em>'+state.ano+'</em></h1>'+
+          '<p class="sub">As linhas editoriais ficam aqui em cima pra ler antes de escrever. Data de cada post e mês da pauta são editáveis.</p>'+
+          '<div class="mes-ctrl">'+
+            '<label for="mesinput">Mês da pauta</label>'+
+            '<input type="month" id="mesinput" data-act="mes" value="'+state.ano+'-'+dd(state.mes)+'">'+
+          '</div>'+
+        '</div>'+
+        '<div class="right"><div class="counts">'+
+          '<div class="count"><b>'+c.total+'</b><span>posts</span></div>'+
+          '<div class="count"><b>'+c.escritos+'</b><span>escritos</span></div>'+
+          '<div class="count"><b>'+c.postados+'</b><span>postados</span></div>'+
+        '</div></div>'+
+      '</header>'+
+      '<div class="section-head"><h2>Linhas editoriais</h2><span class="note">ler antes de escrever · dá pra ajustar o texto</span><span class="line"></span></div>'+
+      linhasHTML(c)+
+      '<div class="rules">'+
+        '<div class="rule-chip"><b>Legenda</b> acrescenta informação, não repete a arte</div>'+
+        '<div class="rule-chip"><b>Posicionamento e Marketing</b> terminam em convite pro direct</div>'+
+        '<div class="rule-chip"><b>Gancho</b> pergunta simples, tom cotidiano — sem alarmismo</div>'+
+        '<div class="rule-chip"><b>Sempre</b> de igual pra igual com o integrador, nunca lecionando</div>'+
+      '</div>'+
+      '<div class="section-head"><h2>Calendário</h2><span class="note">'+nomeMes().toLowerCase()+' de '+state.ano+' · clique num post pra ir escrever</span><span class="line"></span></div>'+
+      calHTML()+
+      '<div class="section-head"><h2>Pauta</h2><span class="note">clique em qualquer campo pra escrever</span><span class="line"></span></div>'+
+      '<div class="grid">'+ ordenados().map(cardHTML).join("") +
+        '<button class="add" type="button" data-act="add">+ Adicionar post</button>'+
+      '</div>'+
+      (readonly ? '<p class="ro">Esta visualização é somente leitura — o que você escrever aqui não fica salvo.</p>' : '');
+  }
+
+  // ---- edição ----
+  function marcarSujo(){
+    if(readonly) return;
+    dirty = true;
+    var bar = document.getElementById("savebar");
+    if(bar){
+      bar.classList.add("show");
+      var b = bar.querySelector("#savebtn"), m = bar.querySelector("#savemsg");
+      if(b) b.disabled = false;
+      if(m) m.textContent = "Alterações não salvas";
+    }
+    agendarGravacao();
+  }
+
+  root.addEventListener("input", function(e){
+    var t = e.target, act = t.dataset.act;
+    if(act === "edit"){
+      var p = byN(Number(t.dataset.n));
+      if(!p) return;
+      p[t.dataset.k] = t.value;
+      marcarSujo();
+      if(t.dataset.k === "gancho") atualizarCal();
+    } else if(act === "linha"){
+      var k = t.dataset.p;
+      state.linhas[k].aspecto = t.value;
+      marcarSujo();
+      var hints = root.querySelectorAll('.hint[data-hint="'+k+'"] span');
+      for(var i=0;i<hints.length;i++) hints[i].textContent = t.value;
+    }
+  });
+
+  root.addEventListener("change", function(e){
+    var t = e.target, act = t.dataset.act, p;
+    if(act === "pilar"){
+      p = byN(Number(t.dataset.n));
+      if(!p) return;
+      p.pilar = t.value;
+      marcarSujo(); render();
+    } else if(act === "dia"){
+      p = byN(Number(t.dataset.n));
+      if(!p) return;
+      p.dia = Number(t.value);
+      marcarSujo(); render();
+      var el = document.getElementById("post-"+p.n);
+      if(el) el.scrollIntoView({block:"center"});
+    } else if(act === "mes"){
+      var v = String(t.value || "").split("-");
+      if(v.length < 2 || !v[0] || !v[1]) return;
+      state.ano = Number(v[0]);
+      state.mes = Number(v[1]);
+      ajustarDias();
+      marcarSujo(); render();
+    }
+  });
+
+  root.addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if(!b) return;
+    var act = b.dataset.act;
+    if(act === "status"){
+      var p = byN(Number(b.dataset.n));
+      if(!p) return;
+      p.status = b.dataset.v;
+      marcarSujo();
+      var grupo = b.parentNode.querySelectorAll("button");
+      for(var i=0;i<grupo.length;i++) grupo[i].setAttribute("aria-pressed", String(grupo[i].dataset.v === p.status));
+      atualizarCal(); atualizarContagens();
+    } else if(act === "ir"){
+      var el = document.getElementById("post-"+b.dataset.n);
+      if(!el) return;
+      el.scrollIntoView({behavior:"smooth", block:"center"});
+      el.classList.add("flash");
+      setTimeout(function(){ el.classList.remove("flash"); }, 950);
+    } else if(act === "del"){
+      var alvo = byN(Number(b.dataset.n));
+      if(!alvo) return;
+      var rotulo = alvo.gancho ? '"'+alvo.gancho+'"' : "este post";
+      if(!window.confirm("Remover "+rotulo+" da pauta?")) return;
+      state.posts = state.posts.filter(function(x){ return x.n !== alvo.n; });
+      marcarSujo(); render();
+    } else if(act === "add"){
+      var maxN = 0, ultimoDia = 1;
+      state.posts.forEach(function(x){ if(x.n>maxN) maxN=x.n; if(x.dia>ultimoDia) ultimoDia=x.dia; });
+      var novoDia = Math.min(ultimoDia + 2, noMes());
+      state.posts.push({n:maxN+1, dia:novoDia, pilar:"pos", gancho:"", formato:"", arte:"", legenda:"", status:"ideia"});
+      marcarSujo(); render();
+      var novo = document.getElementById("post-"+(maxN+1));
+      if(novo){ novo.scrollIntoView({behavior:"smooth", block:"center"}); var g = novo.querySelector(".gancho"); if(g) g.focus(); }
+    }
+  });
+
+  function atualizarCal(){
+    var cal = root.querySelector(".cal");
+    if(!cal) return;
+    var novo = document.createElement("div");
+    novo.innerHTML = calHTML();
+    cal.replaceWith(novo.firstElementChild);
+  }
+
+  function atualizarContagens(){
+    var c = contagens(), b = root.querySelectorAll(".count b");
+    if(b.length === 3){ b[0].textContent = c.total; b[1].textContent = c.escritos; b[2].textContent = c.postados; }
+  }
+
+  // ---- salvar (neste navegador) ----
+  var CHAVE = "pauta-falaai";
+  var timer = null;
+
+  function restaurar(){
+    try{
+      var bruto = window.localStorage.getItem(CHAVE);
+      if(!bruto) return;
+      var s = JSON.parse(bruto);
+      if(s && s.posts && s.linhas && s.mes) state = s;
+    }catch(e){}
+  }
+
+  function gravar(){
+    var bar = document.getElementById("savebar");
+    var msg = bar ? bar.querySelector("#savemsg") : null;
+    try{
+      window.localStorage.setItem(CHAVE, JSON.stringify(state));
+      dirty = false;
+      if(msg) msg.textContent = "Salvo neste navegador";
+      if(bar) setTimeout(function(){ if(!dirty) bar.classList.remove("show"); }, 1800);
+    }catch(e){
+      if(msg) msg.textContent = "Nao deu pra salvar neste navegador";
+    }
+  }
+
+  function agendarGravacao(){
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(gravar, 900);
+  }
+
+  function barra(){
+    var bar = document.createElement("div");
+    bar.className = "savebar";
+    bar.id = "savebar";
+    bar.innerHTML = '<span id="savemsg">Alteracoes nao salvas</span><button type="button" id="savebtn">Salvar agora</button>';
+    document.body.appendChild(bar);
+    bar.querySelector("#savebtn").addEventListener("click", function(){
+      if(timer) clearTimeout(timer);
+      gravar();
+    });
+  }
+
+  window.addEventListener("beforeunload", function(e){
+    if(dirty){ e.preventDefault(); e.returnValue = ""; }
+  });
+
+  restaurar();
+  ajustarDias();
+  render();
+  barra();
+})();
+</script>
+</body>
+</html>
